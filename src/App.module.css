@@ -33,15 +33,19 @@
 }
 
 .article{
-  border: 1px solid #ffffff;
+  border: 1px solid #000000;
+  border-radius: 5px;
   padding: 30px;
 }
 
 .button{
-  max-width: 100px;
-  border: 1px solid #ffffff;
-  background-color: #1c52c7;
-  padding: 30px;
+  padding-top: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 10px;
+  border: 1px solid #000000;
+  border-radius: 5px;
+
 }
 
 .content{

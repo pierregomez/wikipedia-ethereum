@@ -16,7 +16,6 @@ const NewArticle = () => {
     setEditor(new MediumEditor(`.${styles.editable}`))
   }, [setEditor])
   const handleSubmit = () => {
-    console.log(editor.getContent())
     if(contract){
       console.log("there is a contract connection")
       contract.methods.addNewArticle(DOMPurify.sanitize(editor.getContent())).send()
@@ -86,17 +85,24 @@ const UpdateArticle = (param) => {
   const contract = useSelector(({ contract }) => contract)
   useEffect(() => {
     if(contract){
-      contract.methods.articleContent(param.match.params.articleId).call().then(content => {
-        const newEditor = new MediumEditor(`.${styles.editable}`)
-        newEditor.setContent(content)
-        setEditor(newEditor)
+      contract.methods.getAllIds().call().then(ids => {
+        if(ids.includes(param.match.params.articleId)){
+          contract.methods.articleContent(param.match.params.articleId).call().then(content => {
+            const newEditor = new MediumEditor(`.${styles.editable}`)
+            newEditor.setContent(content)
+            setEditor(newEditor)
+          })
+        }
+        else{
+          document.getElementById("content").innerHTML =
+            "<div>Not found. This page doesn't exist...</div>"
+        }
+
       })
     }
   }, [contract, param,setEditor])
   const handleSubmit = () => {
-    console.log(editor.getContent())
     if(contract){
-      console.log("there is a contract connection")
       contract.methods.updateArticle(param.match.params.articleId, DOMPurify.sanitize(editor.getContent())).send()
       console.log("article was updated : new content = " + editor.getContent())
     }
@@ -107,6 +113,7 @@ const UpdateArticle = (param) => {
       <div>
         <Link to="/">Home</Link>
       </div>
+      <div id="content" className={styles.content}>
       <form onSubmit={handleSubmit}>
         <div className={styles.subTitle}>Update article</div>
         <div className={styles.mediumWrapper}>
@@ -114,6 +121,7 @@ const UpdateArticle = (param) => {
         </div>
         <input type="submit" value="Update" />
       </form>
+      </div>
     </div>
   )
 }
@@ -138,13 +146,14 @@ const ReadarticleById = (param) =>{
     }
   }, [contract,setContent,param])
   return  <div>
-                  <div className={styles.links}>
-                    <Link to="/">Home</Link>
-                  </div>
-                  <div id="content" className={styles.content}>
-                  <Link to={"/article/update/" + param.match.params.articleId }>Edit</Link>
-                        <div id="article"className={styles.article} dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(articleContent)}}/>
-                  </div>
+            <div className={styles.links}>
+              <Link to="/">Home</Link>
+            </div>
+            <div id="content" className={styles.content}>
+            <Link to={"/article/update/" + param.match.params.articleId} className={styles.button}>Edit</Link>
+            <span> article {param.match.params.articleId} : </span>
+                  <div id="article"className={styles.article} dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(articleContent)}}/>
+            </div>
           </div>
 }
 
