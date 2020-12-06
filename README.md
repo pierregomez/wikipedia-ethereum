@@ -49,6 +49,17 @@ yarn contracts:build
 npm run contracts:build
 ```
 
+
+Deploy the contracts:
+
+First add the truffle-config.js in Ganache Workspace setting, then
+```bash
+# Yarn users
+yarn contracts:migrate
+# NPM users
+npm run contracts:migrate
+```
+
 Create a symlink for your OS.
 
 ```bash
